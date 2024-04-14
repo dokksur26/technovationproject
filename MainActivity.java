@@ -1,18 +1,17 @@
-package com.example.loginpage;
+package com.example.signuppage;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import com.google.android.material.tabs.TabLayout;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText username;
-    EditText password;
-    Button loginButton;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
+    private ViewPageAdapter adapter;
 
 
 
@@ -21,19 +20,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
-        loginButton = findViewById(R.id.loginButton);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager2 = findViewById(R.id.view_pager);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        tabLayout.addTab(tabLayout.newTab().setText("Login"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sign Up"));
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        adapter = new ViewPageAdapter(fragmentManager, getLifecycle());
+        viewPager2.setAdapter(adapter);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View view) {
-                if (username.getText().toString().equals("user") && password.getText().toString().equals(1234))
-                    // **CHANGE THE VALUES**
-                    Toast.makeText(MainActivity.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MainActivity.this, "Attempt to login has failed. Try again.", Toast.LENGTH_SHORT).show();
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                tabLayout.selectTab(tabLayout.getTabAt(position));
+            }
+        });
+
     }
 }
